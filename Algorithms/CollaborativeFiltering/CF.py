@@ -1,7 +1,7 @@
-from Algorithms.CollaborativeFiltering.collaborativefiltering import collaborativefiltering
+from Algorithms.CollaborativeFiltering.collaborative_filtering import collaborative_filtering
 
 
-class CF(collaborativefiltering):
+class CF(collaborative_filtering):
 
     def __init__(self):
         print("constructor")

@@ -1,7 +1,7 @@
-from Algorithms.Bert.BertAlgorithm import BertAlgorithm
+from Algorithms.Bert.Bert_algorithm import Bert_algorithm
 
 
-class bert(BertAlgorithm):
+class Bert(Bert_algorithm):
 
     def __init__(self):
         print("")

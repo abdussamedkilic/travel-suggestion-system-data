@@ -1,11 +1,11 @@
-from Algorithms.WordEmbeddings.wordEmbeddings import wordEmbeddings
+from Algorithms.WordEmbeddings.word_embedding import word_embedding
 
 
-class Doc2Vec(wordEmbeddings):
+class Doc2Vec(word_embedding):
 
     def __init__(self):
         print("hello")
 
-    def implementAlgorithm(self):
+    def implement_algorithm(self):
 
         print("override")

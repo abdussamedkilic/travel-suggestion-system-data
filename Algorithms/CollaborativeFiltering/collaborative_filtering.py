@@ -1,5 +1,5 @@
 
-class collaborativefiltering:
+class collaborative_filtering:
 
     def __init__(self):
         print("constructor collaborativefiltering")
@@ -7,9 +7,9 @@ class collaborativefiltering:
     def recommender(self):
         print("Recommender matrix")
 
-    def findSimilarity(self):
+    def find_similarity(self):
         print("similiary")
 
-    def findObject(self):
+    def find_object(self):
         print("find the most object from similarty results.")
 

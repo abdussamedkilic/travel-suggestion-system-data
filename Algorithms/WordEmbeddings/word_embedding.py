@@ -1,4 +1,4 @@
-class wordEmbeddings:
+class word_embedding:
     sentences = ""  # it can be multiple matrix as String type.
 
     """
@@ -11,12 +11,12 @@ class wordEmbeddings:
         print("fill that.")
 
     # we don't need to override this funciton with interitance in other Class.
-    def preprocesses(sentences):
+    def pre_processes(sentences):
         print("sentence:" + sentences[0])
 
         return sentences
 
-    def implementAlgorithm(self):
+    def implement_algorithm(self):
         print("fill that.")
 
 
