@@ -11,12 +11,12 @@ class word_embedding:
         print("fill that.")
 
     # we don't need to override this funciton with interitance in other Class.
-    def pre_processes(sentences):
+    def preprocesses(self,sentences):
         print("sentence:" + sentences[0])
 
         return sentences
 
-    def implement_algorithm(self):
+    def implementAlgorithm(self , document):
         print("fill that.")
 
 
