@@ -1,4 +1,4 @@
-from Algorithms.CollaborativeFiltering.collaborative_filtering import collaborative_filtering
+from Algorithms.CollaborativeFiltering.Collaborative_Filtering import collaborative_filtering
 
 
 class CF(collaborative_filtering):

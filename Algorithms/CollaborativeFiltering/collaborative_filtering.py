@@ -1,5 +1,5 @@
 
-class collaborative_filtering:
+class Collaborative_Filtering:
 
     def __init__(self):
         print("constructor collaborativefiltering")
