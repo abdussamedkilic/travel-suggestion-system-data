@@ -1,4 +1,4 @@
-from Algorithms.CollaborativeFiltering.Cosine_Similarity import cosine_similarity
+from Algorithms.CollaborativeFiltering.cosine_similarity import cosine_similarity
 from Algorithms.ImageSimilarity.Image_Similarity import ImageSimilarity
 from Algorithms.WordEmbeddings.DoctoVec import DoctoVec
 from Algorithms.ImageSimilarity.Cnn import Cnn
@@ -34,10 +34,10 @@ test_document = [
 
 # TODO : To Run DOC2VEC
 # Recommend from Comments Data
-# doc2vec = DoctoVec(document , test_document)
-# similarity_matrix_doc2vec=doc2vec.main_Doc2Vec()
-# print("\similarity_matrix_doc2vec Similarity")
-# print(similarity_matrix_doc2vec)
+doc2vec = DoctoVec(document, test_document)
+similarity_matrix_doc2vec = doc2vec.main_Doc2Vec()
+print("\similarity_matrix_doc2vec Similarity")
+print(similarity_matrix_doc2vec)
 
 
 readImg = ReadImage('images/')
@@ -51,8 +51,8 @@ cosine = cosine_similarity()
 # similarity.main_image_similarity()
 
 # ? CNN SIDE :
-cnn = Cnn(image_list)
-feature_vector = cnn.main_Cnn()  # feature_vector is a list. size = (1,image number)
-similarity_score = cosine.find_cnn_image_similarity(
-    feature_vector[1], feature_vector[2])
-print("Cnn similarity score:"+str(similarity_score))
+# cnn = Cnn(image_list)
+# feature_vector = cnn.main_Cnn()  # feature_vector is a list. size = (1,image number)
+# similarity_score = cosine.find_cnn_image_similarity(
+#     feature_vector[1], feature_vector[2])
+# print("Cnn similarity score:"+str(similarity_score))
