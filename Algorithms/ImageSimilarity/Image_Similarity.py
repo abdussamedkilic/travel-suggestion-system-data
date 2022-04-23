@@ -31,7 +31,7 @@ class ImageSimilarity:
         return image_array / 255
 
     def implement_image_similarity(self):
-        opened_image1 = self.open_image(self.image_list[0])
+        opened_image1 = self.open_image(self.image_list[1])
         opened_image2 = self.open_image(self.image_list[1])
         reshaped_image1 = self.image_preprocess(opened_image1)
         reshaped_image2 = self.image_preprocess(opened_image2)

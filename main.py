@@ -2,6 +2,7 @@ from Algorithms.CollaborativeFiltering.cosine_similarity import cosine_similarit
 from Algorithms.ImageSimilarity.Image_Similarity import ImageSimilarity
 from Algorithms.WordEmbeddings.DoctoVec import DoctoVec
 from Algorithms.ImageSimilarity.Cnn import Cnn
+from Algorithms.Bert.Bert_algorithm import Bert_algorithm
 from Data.Read_Image import ReadImage
 
 
@@ -31,6 +32,7 @@ test_document = [
      ]  # Kocaeli
 ]
 
+# cosine = cosine_similarity()
 
 # TODO : To Run DOC2VEC
 # Recommend from Comments Data
@@ -40,19 +42,23 @@ test_document = [
 # print(similarity_matrix_doc2vec)
 
 
-readImg = ReadImage('images/')
-image_list = readImg.read_image()
-print("read image list:\n"+str(image_list))
+# ? Read All Images :
+# readImg = ReadImage('images/')
+# image_list = readImg.read_image()
+# print("read image list:\n"+str(image_list))
 
-cosine = cosine_similarity()
 
 # ! warning, that's not work for now
-#similarity = ImageSimilarity(image_list)
+# ? Image Similarity :
+# similarity = ImageSimilarity(image_list)
 # similarity.main_image_similarity()
 
 # ? CNN SIDE :
-cnn = Cnn(image_list)
-feature_vector = cnn.main_Cnn()  # feature_vector is a list. size = (1,image number)
-similarity_score = cosine.find_cnn_image_similarity(
-    feature_vector[1], feature_vector[2])
-print("Cnn similarity score:"+str(similarity_score))
+# cnn = Cnn(image_list)
+# feature_vector = cnn.main_Cnn()  # feature_vector is a list. size = (1,image number)
+# similarity_score = cosine.find_cnn_image_similarity(
+#     feature_vector[1], feature_vector[2])
+# print("Cnn similarity score:"+str(similarity_score))
+
+# ? Bert SIDE :
+Bert_algorithm.test_run()
