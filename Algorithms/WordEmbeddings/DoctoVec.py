@@ -1,5 +1,5 @@
 
-from Algorithms.WordEmbeddings.Word_Embedding import word_embedding
+from Algorithms.WordEmbeddings.word_embedding import word_embedding
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.tokenize import word_tokenize
 

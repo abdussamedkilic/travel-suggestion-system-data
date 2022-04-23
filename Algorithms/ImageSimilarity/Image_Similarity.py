@@ -1,4 +1,4 @@
-from Algorithms.CollaborativeFiltering.Cosine_Similarity import cosine_similarity
+from Algorithms.CollaborativeFiltering.cosine_similarity import cosine_similarity
 
 from PIL import Image
 import numpy as np
