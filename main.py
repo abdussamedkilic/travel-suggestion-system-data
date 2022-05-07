@@ -1,10 +1,11 @@
+from numpy import save
 from Algorithms.CollaborativeFiltering.cosine_similarity import cosine_similarity
 from Algorithms.ImageSimilarity.Image_Similarity import ImageSimilarity
 from Algorithms.WordEmbeddings.DoctoVec import DoctoVec
 from Algorithms.ImageSimilarity.Cnn import Cnn
 from Algorithms.Bert.Bert_algorithm import Bert_algorithm
 from Data.Read_Image import ReadImage
-
+from Data.Mongo_DB import Mongodb
 
 document = [
     [["I love Galata Tower, I like Istanbul"]  # Galata Kulesi,"comment1 , comment2"
@@ -32,33 +33,39 @@ test_document = [
      ]  # Kocaeli
 ]
 
-# cosine = cosine_similarity()
+# TODO : to Run MONGOGB
+main_mongodb = Mongodb()
+readImg = ReadImage('images/')
+#cosine = cosine_similarity()
+# doc2vec = DoctoVec(document, test_document)
+# similarity = ImageSimilarity(image_list)
+# cnn = Cnn(image_list)
+
+#results_mongodb's type = dicts in array. e.g = [{'name':'Topkapi Palace',...}]
+results_mongodb = main_mongodb.read_Mongo_DB()
+readImg.read_image_fromURL(results_mongodb[0].get('image'),results_mongodb[0].get('name'))
 
 # TODO : To Run DOC2VEC
 # Recommend from Comments Data
-# doc2vec = DoctoVec(document, test_document)
 # similarity_matrix_doc2vec = doc2vec.main_Doc2Vec()
 # print("\similarity_matrix_doc2vec Similarity")
 # print(similarity_matrix_doc2vec)
 
 
 # ? Read All Images :
-# readImg = ReadImage('images/')
-# image_list = readImg.read_image()
-# print("read image list:\n"+str(image_list))
+#image_list = readImg.read_image()
+#print("read image list:\n"+str(image_list))
 
 
 # ! warning, that's not work for now
 # ? Image Similarity :
-# similarity = ImageSimilarity(image_list)
 # similarity.main_image_similarity()
 
 # ? CNN SIDE :
-# cnn = Cnn(image_list)
 # feature_vector = cnn.main_Cnn()  # feature_vector is a list. size = (1,image number)
 # similarity_score = cosine.find_cnn_image_similarity(
-#     feature_vector[1], feature_vector[2])
+# feature_vector[1], feature_vector[2])
 # print("Cnn similarity score:"+str(similarity_score))
 
 # ? Bert SIDE :
-Bert_algorithm.test_run()
+#Bert_algorithm.test_run()

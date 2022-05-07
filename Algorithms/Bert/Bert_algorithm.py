@@ -1,4 +1,4 @@
-from Algorithms.Bert.Bert import Bert
+from Algorithms.Bert.bert import Bert
 
 
 class Bert_algorithm:
