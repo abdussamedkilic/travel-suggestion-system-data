@@ -9,10 +9,11 @@ from Data.Read_Image import ReadImage
 from Data.Mongo_DB import Mongodb
 
 isMongodb = True
-isDoc2vec = True
-isCnn = False
+isDoc2vec = False
+isCnn = True
 isBert = False
 isImageSimilarity = False
+isSaveImage = False # Read url from mongodb and save in file.
 
 city_name = "Istanbul"
 
@@ -50,25 +51,27 @@ write_excel = WriteExcel()
 
 main_mongodb = Mongodb()
 doc2vec = DoctoVec([city_name])
-#readImg = ReadImage('images/')
+readImg = ReadImage('images/'+city_name+"/")
 #cosine = cosine_similarity()
 #similarity = ImageSimilarity(image_list)
-#cnn = Cnn(image_list)
-
 
 if isMongodb:
-    # TODO : to Run MONGOGB
+    # TODO to Run MONGOGB
     comments,placeName_list,imageUrl_list,detail_list = main_mongodb.read_Mongo_DB(city_name)
-    # TODO : to Run Prepare Data
-    prepread_comments = doc2vec.prepare_comments(comments)
+    # TODO to Run Prepare Data
+    prepread_comments = doc2vec.prepare_comments(comments) # for doc2vec
     doc2vec.set_doc(prepread_comments)
     doc2vec.set_text_doc(detail_list)
 
-
+    # just one time.
     # TODO to Run Read Images
-    #readImg.read_image_fromURL(results_mongodb[0].get('image'),results_mongodb[0].get('name'))
-    # ? Read All Images :
-    #image_list = readImg.read_image()
+    # we will change it to make each city.
+    if isSaveImage:
+        for i in range(0,len(placeName_list[0])): # place number
+            readImg.read_image_fromURL(imageUrl_list[0][i],placeName_list[0][i])
+    
+    # TODO to Run Read All Images :
+    image_list = readImg.read_image()
     #print("read image list:\n"+str(image_list))
 
 if isDoc2vec:
@@ -86,19 +89,19 @@ if isDoc2vec:
     for i in range(0,len(scoreMatrix_list)): # city number
         # placeName_list's size(1,place number) --> just one city for places name. we will change.
         write_excel.writeExcel_Doc2vec(scoreMatrix_list[i],placeName_list,city_name) 
-        
-        
-        
+               
 if isCnn:
-    print()
     # TODO to Run CNN 
-    # feature_vector = cnn.main_Cnn()  # feature_vector is a list. size = (1,image number)
-    # similarity_score = cosine.find_cnn_image_similarity(
-    # feature_vector[1], feature_vector[2])
-    # print("Cnn similarity score:"+str(similarity_score))
+    cnn = Cnn(image_list,city_name)
+    feature_vector = cnn.main_Cnn()  # feature_vector is a list. size = (1,image number)
+    
+    similarity_score = create_matrix.createScoresMatrix_Cnn(feature_vector)
+    write_excel.writeExcel_CNN(image_list,city_name,similarity_score)  #just one city for places name. we will change.
+    
+
 if isBert:
     print()
-    # TODO to Run Bert
+    # TODO to Run Ber
     #Bert_algorithm.test_run()
 if isImageSimilarity:
     print("We are not using now...")

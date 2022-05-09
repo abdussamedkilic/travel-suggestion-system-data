@@ -1,3 +1,4 @@
+from Algorithms.CollaborativeFiltering.cosine_similarity import cosine_similarity
 
 class CreateMatrix:
     
@@ -16,8 +17,16 @@ class CreateMatrix:
         
         return scores_matrix
 
-    def createScoresMatrix_Cnn(self,similartiy_results):
-        print("")
+    def createScoresMatrix_Cnn(self,feature_vector):
+        cosine = cosine_similarity()
+        score_matrix = [
+            [ 0 for j in range(len(feature_vector))] for i in range(len(feature_vector))]
+
+        for i in range(0,len(feature_vector)):
+            for j in range(0,len(feature_vector)):
+                score_matrix[i][j] = cosine.find_cnn_image_similarity(feature_vector[i],feature_vector[j])
+        
+        return score_matrix
     
     def createScoresMatrix_Bert(self,similarity_results):
         print("")
