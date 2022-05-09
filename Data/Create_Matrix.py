@@ -1,4 +1,5 @@
 from Algorithms.CollaborativeFiltering.cosine_similarity import cosine_similarity
+from Algorithms.Bert.Bert_algorithm import Bert_algorithm
 
 class CreateMatrix:
     
@@ -28,8 +29,18 @@ class CreateMatrix:
         
         return score_matrix
     
-    def createScoresMatrix_Bert(self,similarity_results):
-        print("")
+    def createScoresMatrix_Bert(self,comments):
+        print(len(comments))
+        bert = Bert_algorithm()
+        score_matrix = [
+            [ 0 for j in range(len(comments))] for i in range(len(comments))]
+
+        for i in range(0,len(comments)): #len(comments)
+              for j in range(0,len(comments)): #len(comments)
+                  print("i:"+str(i)+" j:"+str(j))
+                  score_matrix[i][j] = bert.test_run(comments[i][0],comments[j][0])
+        
+        return score_matrix
     
     def createScoresMatrix_ImageSimilarity(self,similarity_results):
         print("")

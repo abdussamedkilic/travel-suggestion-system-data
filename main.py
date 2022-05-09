@@ -10,8 +10,8 @@ from Data.Mongo_DB import Mongodb
 
 isMongodb = True
 isDoc2vec = False
-isCnn = True
-isBert = False
+isCnn = False
+isBert = True
 isImageSimilarity = False
 isSaveImage = False # Read url from mongodb and save in file.
 
@@ -100,8 +100,18 @@ if isCnn:
     
 
 if isBert:
-    print()
-    # TODO to Run Ber
+    # TODO to Run Bert
+    #prepread_comments's size = (city number , place number)
+    score_matrix_List = [] # list for city 
+   
+    for i in range(0,len(prepread_comments)): # city number
+         score_matrix_List.append(create_matrix.createScoresMatrix_Bert(prepread_comments[i]))
+
+    for i in range(0,len(score_matrix_List)):
+        write_excel.writeExcel_Bert(score_matrix_List[i],placeName_list,city_name)    
+    
+    #print("score matrix:\n"+str(score_matrix_List[0]))
+
     #Bert_algorithm.test_run()
 if isImageSimilarity:
     print("We are not using now...")

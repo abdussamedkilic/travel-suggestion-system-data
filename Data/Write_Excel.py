@@ -37,3 +37,17 @@ class WriteExcel:
         
         print(" writing is completed for CNN")
         workbook.close()
+    def writeExcel_Bert(self,similarity_matrix,placeName_list,city_name):
+        # similarity_matrix's size = (place number , place number)
+
+        workbook = xlsxwriter.Workbook("Output/Bert_output"".xlsx")
+        worksheet_output = workbook.add_worksheet(city_name)
+        
+        for i in range(0,len(placeName_list[0])): #place number
+            worksheet_output.write(i+1,0,placeName_list[0][i])
+            worksheet_output.write(0,i+1,placeName_list[0][i])
+            for j in range(0,len(placeName_list[0])):
+                worksheet_output.write(i+1,j+1,similarity_matrix[i][j])
+
+        print(" writing is completed for Bert")
+        workbook.close()
