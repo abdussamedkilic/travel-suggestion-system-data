@@ -29,7 +29,7 @@ class DoctoVec(word_embedding):
     doc = []
     text_doc = []
     dm = 1
-    want_train = True
+    want_train = False
 
     def __init__(self,cityName_list):
         self.city_name = cityName_list
@@ -63,7 +63,6 @@ class DoctoVec(word_embedding):
                 temp_comment += ", "+comments_list[i][j]
             goal_matrix[i].append(temp_comment)
         return [goal_matrix]
-    
     
 
     def find_dimension(self, matrix):
@@ -104,28 +103,33 @@ class DoctoVec(word_embedding):
         return preprocessed_text
 
     def implement_Algorithm(self, document,text_document):
+        """
+        NOT: --> document ve text_document içerisinde place number farklılık gösterebileceği için dinamik
+        şekilde tanımlanmalı. 
+        
+        """
 
         preprocess_document = [
-            [[] for j in range(len(document[0]))] for i in range(len(document))]
+            [[] for j in range(len(document[i]))] for i in range(len(document))]
         tokenizer_document = [
-            [[] for j in range(len(document[0]))] for i in range(len(document))]
+            [[] for j in range(len(document[i]))] for i in range(len(document))]
         tagged_document = [[] for i in range(len(document))]
         
         model_list = []
         #result_similarity_list = []
         result_similarity_list = [
-            [[] for j in range(len(document[0]))] for i in range(len(document))]
+            [[] for j in range(len(document[i]))] for i in range(len(document))]
 
         # step 1 - Preprocess
         for i in range(0, len(document)):  # City Number
-            for j in range(0, len(document[0])):  # Places Number of a city.
+            for j in range(0, len(document[i])):  # Places Number of a city.
                 preprocess_document[i][j].append(
                     self.preprocesses(document[i][j]))
         #print("after preprocess\n" + str(preprocess_document))
 
         # step 2 - Word Tokenizer
         for i in range(0, len(preprocess_document)):
-            for j in range(0, len(preprocess_document[0])):
+            for j in range(0, len(preprocess_document[i])):
                 tokenizer_document[i][j] = self.word_tokenizer(
                     preprocess_document[i][j])
         #print("tokenizer_document\n" + str(tokenizer_document))
@@ -136,7 +140,7 @@ class DoctoVec(word_embedding):
         for i in range(0, len(tokenizer_document)):
             tagged_document[i] = self.tagged_document(tokenizer_document[i])
         #print("tagged document \n" + str(tagged_document))
-        print("Tagged Document Size:" + str(self.find_dimension(tagged_document)))
+        #print("Tagged Document Size:" + str(self.find_dimension(tagged_document)))
 
         # step 4 - Train Doc2Vec Model
         for i in range(0, len(tagged_document)): #city number
@@ -150,11 +154,9 @@ class DoctoVec(word_embedding):
 
         # step 5 - Find Similarity Matrix
         for i in range(0,len(model_list)):
-            for j in range(0,len(document[0])):
+            for j in range(0,len(document[i])):
                 result_similarity_list[i][j] = self.find_similarity_to_matrix(model_list[i], text_document[i][j])
        
-        print("row number: "+str(len(result_similarity_list)) + " column number: "+str(len(result_similarity_list)))
-
         return result_similarity_list
 
     def preprocesses(self, sentences):
