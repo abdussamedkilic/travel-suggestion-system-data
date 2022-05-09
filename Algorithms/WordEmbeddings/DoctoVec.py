@@ -25,15 +25,46 @@ class DoctoVec(word_embedding):
     dm = 1 pv-dm
     """
 
-    city_name = ["Istanbul_deneme", "Bursa_deneme", "Kocaeli_deneme"]
+    city_name = []
     doc = []
     text_doc = []
     dm = 1
     want_train = True
 
+    def __init__(self,cityName_list):
+        self.city_name = cityName_list
+    
+    def set_doc(self,doc):
+        self.doc = doc
+    def set_text_doc(self,text_doc):
+        self.text_doc = text_doc
+    """
     def __init__(self, doc, text_doc):
         self.doc = doc
         self.text_doc = text_doc
+    """
+    def prepare_comments(self,comments_list):
+        """
+        --> We need to merge comments. 
+        Our Goal Matrix:
+        document = [
+        [["I love Galata Tower, I like Istanbul"]  # Galata Kulesi,"comment1 , comment2"
+        , ["I don't like Maiden's Tower. I like Istanbul"]  # Kız Kulesi
+
+        ],  # İstanbul
+        """
+       
+        rowNumber , colNumber = self.find_dimension(comments_list)
+        goal_matrix =[[] for i in range(rowNumber)]
+        print("row number: "+str(rowNumber)+" col number: "+str(colNumber))
+        for i in range(0,rowNumber):
+            temp_comment = ""
+            for j in range(0,colNumber):
+                temp_comment += ", "+comments_list[i][j]
+            goal_matrix[i].append(temp_comment)
+        return [goal_matrix]
+    
+    
 
     def find_dimension(self, matrix):
         """
@@ -72,41 +103,43 @@ class DoctoVec(word_embedding):
         preprocessed_text = ' '.join(tokens)
         return preprocessed_text
 
-    def implement_Algorithm(self, document):
+    def implement_Algorithm(self, document,text_document):
+
         preprocess_document = [
             [[] for j in range(len(document[0]))] for i in range(len(document))]
         tokenizer_document = [
             [[] for j in range(len(document[0]))] for i in range(len(document))]
         tagged_document = [[] for i in range(len(document))]
-        # deneme_tagged_document = []
+        
         model_list = []
-        result_similarity_list = []
+        #result_similarity_list = []
+        result_similarity_list = [
+            [[] for j in range(len(document[0]))] for i in range(len(document))]
 
         # step 1 - Preprocess
         for i in range(0, len(document)):  # City Number
             for j in range(0, len(document[0])):  # Places Number of a city.
                 preprocess_document[i][j].append(
                     self.preprocesses(document[i][j]))
-        print("after preprocess\n" + str(preprocess_document))
+        #print("after preprocess\n" + str(preprocess_document))
 
         # step 2 - Word Tokenizer
         for i in range(0, len(preprocess_document)):
             for j in range(0, len(preprocess_document[0])):
                 tokenizer_document[i][j] = self.word_tokenizer(
                     preprocess_document[i][j])
-        print("tokenizer_document\n" + str(tokenizer_document))
-        print("Tokenizer Document Size:" +
-              str(self.find_dimension(tokenizer_document)))
-        print(tokenizer_document[0][1])
+        #print("tokenizer_document\n" + str(tokenizer_document))
+        #print("Tokenizer Document Size:" +
+        #      str(self.find_dimension(tokenizer_document)))
 
         # step 3 - Tagging Document
         for i in range(0, len(tokenizer_document)):
             tagged_document[i] = self.tagged_document(tokenizer_document[i])
-        print("tagged document \n" + str(tagged_document))
+        #print("tagged document \n" + str(tagged_document))
         print("Tagged Document Size:" + str(self.find_dimension(tagged_document)))
 
         # step 4 - Train Doc2Vec Model
-        for i in range(0, len(tagged_document)):
+        for i in range(0, len(tagged_document)): #city number
             if self.want_train == True:
                 model_doc2vec = self.train_doc2vec(tagged_document[i])
                 # model_doc2vec= model_doc2vec.train(train_corpus, total_examples=model.corpus_count, epochs=model.epochs)
@@ -116,10 +149,11 @@ class DoctoVec(word_embedding):
                 "Models/" + self.city_name[i] + "_doc2vec.model"))
 
         # step 5 - Find Similarity Matrix
-        for i in range(0, len(model_list)):
-            # We use just "I love Bursa" as Text Document, but after it will be change.
-            result_similarity_list.append(
-                self.find_similarity_to_matrix(model_list[i], "I love Bursa"))
+        for i in range(0,len(model_list)):
+            for j in range(0,len(document[0])):
+                result_similarity_list[i][j] = self.find_similarity_to_matrix(model_list[i], text_document[i][j])
+       
+        print("row number: "+str(len(result_similarity_list)) + " column number: "+str(len(result_similarity_list)))
 
         return result_similarity_list
 
@@ -188,7 +222,7 @@ class DoctoVec(word_embedding):
          TaggedDocument(words=[‘this’, ‘is’, ‘a’, ‘good’, ‘laptop’], tags=[5])]
          --> You should send to The Places of Istanbul. so just a city
         """
-        return Doc2Vec(tagged_document, vector_size=20, dm=self.dm, window=2, min_count=1, workers=4, epochs=200)
+        return Doc2Vec(tagged_document, vector_size=20, dm=self.dm, window=2, min_count=1, workers=4, epochs=100)
 
     def train_model(self, tagged_document):
         print("model is training...")
@@ -216,5 +250,5 @@ class DoctoVec(word_embedding):
         first step:  create instance of Doc2Vec with constructor
         second step: call the main_Doc2Vec
         """
-        result_similarity_list = self.implement_Algorithm(self.doc)
+        result_similarity_list = self.implement_Algorithm(self.doc,self.text_doc)
         return result_similarity_list

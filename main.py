@@ -1,4 +1,3 @@
-from numpy import save
 from Algorithms.CollaborativeFiltering.cosine_similarity import cosine_similarity
 from Algorithms.ImageSimilarity.Image_Similarity import ImageSimilarity
 from Algorithms.WordEmbeddings.DoctoVec import DoctoVec
@@ -7,6 +6,7 @@ from Algorithms.Bert.Bert_algorithm import Bert_algorithm
 from Data.Read_Image import ReadImage
 from Data.Mongo_DB import Mongodb
 
+"""
 document = [
     [["I love Galata Tower, I like Istanbul"]  # Galata Kulesi,"comment1 , comment2"
      , ["I don't like Maiden's Tower. I like Istanbul"]  # Kız Kulesi
@@ -32,30 +32,37 @@ test_document = [
      , ["I love Seka Park"]  # Seka Park
      ]  # Kocaeli
 ]
-
-# TODO : to Run MONGOGB
+"""
 main_mongodb = Mongodb()
-readImg = ReadImage('images/')
+doc2vec = DoctoVec(["Istanbul"])
+#readImg = ReadImage('images/')
 #cosine = cosine_similarity()
-# doc2vec = DoctoVec(document, test_document)
 # similarity = ImageSimilarity(image_list)
 # cnn = Cnn(image_list)
 
 #results_mongodb's type = dicts in array. e.g = [{'name':'Topkapi Palace',...}]
-results_mongodb = main_mongodb.read_Mongo_DB()
-readImg.read_image_fromURL(results_mongodb[0].get('image'),results_mongodb[0].get('name'))
+#results_mongodb = main_mongodb.read_Mongo_DB("Istanbul")
+#readImg.read_image_fromURL(results_mongodb[0].get('image'),results_mongodb[0].get('name'))
+
+# TODO : to Run MONGOGB
+comments,placeName_list,imageUrl_list,detail_list = main_mongodb.read_Mongo_DB("Istanbul")
+
+#TODO : to Run Prepare Data
+prepread_comments = doc2vec.prepare_comments(comments)
+doc2vec.set_doc(prepread_comments)
+doc2vec.set_text_doc(detail_list)
 
 # TODO : To Run DOC2VEC
 # Recommend from Comments Data
-# similarity_matrix_doc2vec = doc2vec.main_Doc2Vec()
-# print("\similarity_matrix_doc2vec Similarity")
-# print(similarity_matrix_doc2vec)
-
+similarity_matrix_doc2vec = doc2vec.main_Doc2Vec()
+print("\similarity_matrix_doc2vec Similarity")
+print(similarity_matrix_doc2vec[0][0])
+print("\n1\n"+str(similarity_matrix_doc2vec[0][1]))
+print("\n69\n"+str(similarity_matrix_doc2vec[0][68]))
 
 # ? Read All Images :
 #image_list = readImg.read_image()
 #print("read image list:\n"+str(image_list))
-
 
 # ! warning, that's not work for now
 # ? Image Similarity :
