@@ -4,7 +4,7 @@ import numpy as np
 from keras.models import Model
 from keras.preprocessing import image
 from keras.applications.vgg16 import VGG16
-#from keras.applications.resnet50 import ResNet50
+#from tensorflow.keras.applications.resnet50 import ResNet50
 from keras.applications.imagenet_utils import preprocess_input
 
 """

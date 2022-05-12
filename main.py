@@ -11,11 +11,19 @@ from Data.Mongo_DB import Mongodb
 isMongodb = True
 isDoc2vec = False
 isCnn = False
-isBert = True
+isSaveImage = False # Read url from mongodb and save in file(part of cnn)
+isBert = False
 isImageSimilarity = False
-isSaveImage = False # Read url from mongodb and save in file.
 
 city_name = "Istanbul"
+
+#The sum of the values of these variables must be equal 100
+rateDoc2Vec = 25
+rateCnn = 50
+rateBert = 25
+
+if rateDoc2Vec + rateCnn + rateBert != 100:
+    raise RuntimeError("The sum of the values of these variables must be equal 100!!!")
 
 """
 document = [
@@ -38,13 +46,12 @@ test_document = [
      ],  # Istanbul
     [["I hate shopping this place.Beacuse there are a lot of people everywhere"]  # Kapali Carsi
      , ["I love this place.When ı go the Mosque, ı feel like peaceful"]  # Ulu Cami
-     ],  # Bursa
+     ],  # Bursaé
     [["I like Kocaeli"]  # Kocaeli University
      , ["I love Seka Park"]  # Seka Park
      ]  # Kocaeli
 ]
 """ 
-
 
 create_matrix = CreateMatrix()
 write_excel = WriteExcel()
@@ -58,7 +65,7 @@ readImg = ReadImage('images/'+city_name+"/")
 if isMongodb:
     # TODO to Run MONGOGB
     comments,placeName_list,imageUrl_list,detail_list = main_mongodb.read_Mongo_DB(city_name)
-    # TODO to Run Prepare Data
+    # TODO to Run Prepare Dataé
     prepread_comments = doc2vec.prepare_comments(comments) # for doc2vec
     doc2vec.set_doc(prepread_comments)
     doc2vec.set_text_doc(detail_list)
@@ -76,43 +83,63 @@ if isMongodb:
 
 if isDoc2vec:
     # TODO to Run DOC2VEC
+    # #similarity_matrix_doc2vec's size = (city number , place number(dynamic for each city)) 
     similarity_matrix_doc2vec = doc2vec.main_Doc2Vec()# Recommend from Comments Data
-    #Similarity_matrix_doc2vec's size = (city number , place number(dynamic for each city)) 
-
+    
     # TODO to Run Create Scores Matrix
-    scoreMatrix_list = []
-    for i in range(0,len(similarity_matrix_doc2vec)): #city number
-        scoreMatrix_list.append(create_matrix.createScoresMatrix_Doc2vec(similarity_matrix_doc2vec[i]))
-    # scoreMatrix_list's size = (city number , Place Number , Place Number)
+    scoreMatrix_list = []# scoreMatrix_list's size = (city number , Place Number , Place Number)
+    ratedMatrix_list_Doc2vec = []
 
+    result_list = []
+
+    for i in range(0,len(similarity_matrix_doc2vec)): #city number
+        result_list.append(create_matrix.createScoresMatrix_Doc2vec(similarity_matrix_doc2vec[i]))
+        scoreMatrix_list.append(result_list[i][0])
+        ratedMatrix_list_Doc2vec.append(result_list[i][1])
+    
     # TODO to Run Write Matrix to Excel
     for i in range(0,len(scoreMatrix_list)): # city number
         # placeName_list's size(1,place number) --> just one city for places name. we will change.
         write_excel.writeExcel_Doc2vec(scoreMatrix_list[i],placeName_list,city_name) 
+        write_excel.writeExcel_Doc2vec(ratedMatrix_list_Doc2vec[i],placeName_list,city_name+"_rated")
+    write_excel.workbook_doc2vec.close()
                
 if isCnn:
     # TODO to Run CNN 
     cnn = Cnn(image_list,city_name)
     feature_vector = cnn.main_Cnn()  # feature_vector is a list. size = (1,image number)
     
-    similarity_score = create_matrix.createScoresMatrix_Cnn(feature_vector)
-    write_excel.writeExcel_CNN(image_list,city_name,similarity_score)  #just one city for places name. we will change.
-    
+    # TODO to Run Create Scores Matrix
+    similarity_score ,rated_similarityScore_cnn = create_matrix.createScoresMatrix_Cnn(feature_vector,rateCnn)
+    #rated_similarityScore_cnn = create_matrix.createRatedScoresMatrix_Cnn(feature_vector,rateCnn)
 
+    # TODO to Run Write Matrix to Excel
+    write_excel.writeExcel_CNN(image_list,city_name,similarity_score)  #just one city for places name. we will change.
+    write_excel.writeExcel_CNN(image_list,city_name+"_rated",rated_similarityScore_cnn)
+    write_excel.workbook_cnn.close()
+    
 if isBert:
     # TODO to Run Bert
     #prepread_comments's size = (city number , place number)
+    
+    
+    # TODO to Run Create Scores Matrix
     score_matrix_List = [] # list for city 
-   
-    for i in range(0,len(prepread_comments)): # city number
-         score_matrix_List.append(create_matrix.createScoresMatrix_Bert(prepread_comments[i]))
+    rated_scoreMatrix_list_bert = []
 
+    result_list = []
+
+    for i in range(0,len(prepread_comments)): # city number
+        result_list.append(create_matrix.createScoresMatrix_Bert(prepread_comments[i]))
+        score_matrix_List.append(result_list[i][0])
+        rated_scoreMatrix_list_bert.append(result_list[i][1])
+       
+    # TODO to Run Write Matrix to Excel
     for i in range(0,len(score_matrix_List)):
         write_excel.writeExcel_Bert(score_matrix_List[i],placeName_list,city_name)    
+        write_excel.writeExcel_Bert(rated_scoreMatrix_list_bert[i],placeName_list,city_name+"_rated")
+    write_excel.workbook_bert.close()
     
-    #print("score matrix:\n"+str(score_matrix_List[0]))
-
-    #Bert_algorithm.test_run()
 if isImageSimilarity:
     print("We are not using now...")
     # ! warning, that's not work for now
