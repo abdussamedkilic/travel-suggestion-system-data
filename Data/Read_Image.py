@@ -7,7 +7,7 @@ import os.path
 
 
 class ReadImage(Data):
-    file_path = 'images/'
+    file_path = "images/"
 
     def __init__(self, file_path):
         print("Reading image...")
@@ -23,6 +23,8 @@ class ReadImage(Data):
             img_list.append(file)
 
         return img_list
-    
-    def read_image_fromURL(self,image_url,image_name):
-        urllib.request.urlretrieve(image_url,self.file_path+''+image_name+'.jpg') # read and save from url
+
+    def read_image_fromURL(self, image_url, image_name):
+        urllib.request.urlretrieve(
+            image_url, self.file_path + "" + image_name + ".jpg"
+        )  # read and save from url

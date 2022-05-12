@@ -1,6 +1,4 @@
-
 class Collaborative_Filtering:
-
     def __init__(self):
         print("constructor collaborativefiltering")
 
@@ -12,4 +10,3 @@ class Collaborative_Filtering:
 
     def find_object(self):
         print("find the most object from similarty results.")
-
