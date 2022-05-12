@@ -6,14 +6,18 @@ from Algorithms.ImageSimilarity.Cnn import Cnn
 from Data.Create_Matrix import CreateMatrix
 from Data.Write_Excel import WriteExcel
 from Data.Read_Image import ReadImage
+from Data.read_file import ReadFile
 from Data.Mongo_DB import Mongodb
 
-isMongodb = True
+import numpy as np
+
+isMongodb = False
 isDoc2vec = False
 isCnn = False
 isSaveImage = False # Read url from mongodb and save in file(part of cnn)
 isBert = False
 isImageSimilarity = False
+isMerge = True # for merged operation of output results.
 
 city_name = "Istanbul"
 
@@ -23,7 +27,7 @@ rateCnn = 50
 rateBert = 25
 
 if rateDoc2Vec + rateCnn + rateBert != 100:
-    raise RuntimeError("The sum of the values of these variables must be equal 100!!!")
+    raise RuntimeError("The sum of the rate values must be equal 100!!! for Doc2vec,Cnn and Bert Algorithms")
 
 """
 document = [
@@ -59,6 +63,7 @@ write_excel = WriteExcel()
 main_mongodb = Mongodb()
 doc2vec = DoctoVec([city_name])
 readImg = ReadImage('images/'+city_name+"/")
+readfl = ReadFile('Output/')
 #cosine = cosine_similarity()
 #similarity = ImageSimilarity(image_list)
 
@@ -79,7 +84,6 @@ if isMongodb:
     
     # TODO to Run Read All Images :
     image_list = readImg.read_image()
-    #print("read image list:\n"+str(image_list))
 
 if isDoc2vec:
     # TODO to Run DOC2VEC
@@ -122,7 +126,6 @@ if isBert:
     # TODO to Run Bert
     #prepread_comments's size = (city number , place number)
     
-    
     # TODO to Run Create Scores Matrix
     score_matrix_List = [] # list for city 
     rated_scoreMatrix_list_bert = []
@@ -145,4 +148,36 @@ if isImageSimilarity:
     # ! warning, that's not work for now
     # ? Image Similarity :
     # similarity.main_image_similarity()
+
+if isMerge:
+    
+    # TODO to Run Read Output Results
+    df_doc2vec = readfl.Read_Excel_Rated("Doc2vec_output.xlsx",city_name) 
+    doc2vec_places = list(df_doc2vec.columns)
+    doc2vec_Scorematrix = np.array(df_doc2vec)
+
+    df_cnn = readfl.Read_Excel_Rated("CNN_output.xlsx",city_name)
+    cnn_places = list(df_cnn.columns)
+    cnn_Scorematrix = np.array(df_cnn)
+
+    df_bert = readfl.Read_Excel_Rated("Bert_output.xlsx",city_name) 
+    bert_places = list(df_bert.columns)
+    bert_Scorematrix = np.array(df_bert)
+
+    # TODO to Run Create Score Matrix 
+    merged_matrix = create_matrix.createScoresMatrix_MergedResults(
+        doc2vec_Scorematrix,cnn_Scorematrix,bert_Scorematrix,doc2vec_places,cnn_places)
+
+    # TODO to Run Write Matrix to Excel
+    write_excel.writeExcel_MergedResult(merged_matrix,doc2vec_places,city_name)
+    write_excel.workbook_merged.close()
+    
+
+
+       
+
+
+   
+
+
 

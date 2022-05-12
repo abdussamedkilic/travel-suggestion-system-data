@@ -1,9 +1,14 @@
 import pandas as pd
+from regex import F
 
 class ReadFile:
 
-    def __init__(self) -> None:
-        pass
+    file_path = ""
 
-    def Read_Excel(self,file_path):
-        return pd.read_excel(file_path) #return type is Data Frame
+    def __init__(self,file_path):
+        self.file_path = file_path
+
+    def Read_Excel_Rated(self,filename,city_name):
+
+        return pd.read_excel(self.file_path+filename,sheet_name=city_name+"_rated",index_col=0) #return type is Data Frame
+         

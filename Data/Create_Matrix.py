@@ -1,11 +1,11 @@
-from regex import D
 from Algorithms.CollaborativeFiltering.cosine_similarity import cosine_similarity
 from Algorithms.Bert.Bert_algorithm import Bert_algorithm
 
 class CreateMatrix:
     
-    def __init__(self):
-        print("")
+    
+    def __init__(self) -> None:
+        pass
     
     def createScoresMatrix_Doc2vec(self, similarity_results,rateDoc2vec=25):
        
@@ -54,6 +54,16 @@ class CreateMatrix:
 
     def createScoresMatrix_ImageSimilarity(self,similarity_results):
         print("We aren't using now...")
+    
+    def createScoresMatrix_MergedResults(self,doc2vec_matrix,cnn_matrix,bert_matrix,placeName_list,cnn_placeName_list):
+        
+        merged_matrix = [
+        [0 for j in range(len(doc2vec_matrix))] for i in range(len(doc2vec_matrix))]
+    
+        for i in range(0,len(doc2vec_matrix)): #placeNumber
+            rowIndex_Cnn = cnn_placeName_list.index(placeName_list[i])
+            for j in range(0,len(doc2vec_matrix)): #placeNumber
+                colIndex_Cnn = cnn_placeName_list.index(placeName_list[j])
+                merged_matrix[i][j]=doc2vec_matrix[i][j]+cnn_matrix[rowIndex_Cnn][colIndex_Cnn]+bert_matrix[i][j]
 
-    def createScoresMatrix_MergedMatrix():
-        print()
+        return merged_matrix
