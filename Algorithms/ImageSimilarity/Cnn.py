@@ -3,8 +3,8 @@ import os
 import numpy as np
 from keras.models import Model
 from keras.preprocessing import image
-from tensorflow.keras.applications.vgg16 import VGG16
-from tensorflow.keras.applications.resnet50 import ResNet50
+from keras.applications.vgg16 import VGG16
+#from tensorflow.keras.applications.resnet50 import ResNet50
 from keras.applications.imagenet_utils import preprocess_input
 
 """
@@ -12,28 +12,15 @@ ref:https://github.com/lbrejon/Compute-similarity-between-images-using-CNN/blob/
 
 """
 
-
 class Cnn:
     image_list = []
     img_path = 'images/'
     available_models = ['vgg16', 'resnet50']  # Transfer Learning methods
     selected_model = 'vgg16'
 
-    def __init__(self, image_list):
+    def __init__(self, image_list,city_name):
         self.image_list = image_list
-
-    """
-    def create_folder(folder_name):
-    
-        # Create folder if there is not
-        #  Args:
-        # folder_name: String, folder name
-        # Returns:
-        # None
-        if not os.path.isdir(f"../models/{folder_name}"):
-            os.makedirs(f"../models/{folder_name}")
-            print(f"Folder '../models/{folder_name}' created")
-    """
+        self.img_path+=city_name+'/'
 
     def load_model(self, model_name, include_top=True):
         """ Load pre-trained Keras model
@@ -48,16 +35,20 @@ class Cnn:
                 if model_name == 'vgg16':
                     model = VGG16(weights='imagenet', include_top=include_top)
                 elif model_name == 'resnet50':
-                    model = ResNet50(weights='imagenet',
-                                     include_top=include_top)
+                    print("")
+                    # model = ResNet50(weights='imagenet',
+                    #                  include_top=include_top)
                 print(f">> '{model.name}' model successfully loaded!")
             except:
                 print(f">> Error while loading model '{self.selected_model}'")
+                raise RuntimeError("Error while loading model")
 
     # Wrong selected model
         else:
             print(
                 f">> Error: there is no '{self.selected_model}' in {self.available_models}")
+            raise RuntimeError("Error: there is no '{self.selected_model}' in {self.available_models}")   
+        
         return model
 
     def get_img_size_model(self, model):
@@ -68,9 +59,9 @@ class Cnn:
             Returns: img_size_model: Tuple of integers, image size
         """
         model_name = model.name
-        if model_name == "vgg16":
+        if model_name == 'vgg16':
             img_size_model = (224, 224)
-        elif model_name == "resnet50":
+        elif model_name == 'resnet50':
             img_size_model = (224, 224)
         else:
             img_size_model = (224, 224)
@@ -156,13 +147,4 @@ class Cnn:
             feature_vect_list.append(
                 self.get_feature_vector(model, target_path))
 
-        print("fc"+str(feature_vect_list[0]))
         return feature_vect_list
-
-        """
-        cnn_cosine = cosine_similarity()
-        
-        cnn_similarityscore = cnn_cosine.find_cnn_image_similarity(feature_vect[0],feature_vect[0])
-        #similarity_score = self.calculate_similarity(feature_vect[0],feature_vect[0])
-        print("Cnn Similarity Score:"+str(cnn_similarityscore))
-        """
