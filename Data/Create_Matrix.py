@@ -3,7 +3,7 @@ from Algorithms.Bert.Bert_algorithm import Bert_algorithm
 from Algorithms.Bert.bert import Bert
 
 import numpy as np
-
+from numpy import average
 
 class CreateMatrix:
     def __init__(self) -> None:
@@ -67,19 +67,30 @@ class CreateMatrix:
         ]
 
         for i in range(0,2): # place number len(comments)
-            for j in range(0,5): # place number len(comments)
+            for j in range(0,3): # place number len(comments)
                 print("row ",i," column ",j)
                 result_temp = []
                 for k in range(0,len(comments[0])): # comment number in a place --> len(comments[0])
+                    temp_values = []
                     for a in range(0,len(comments[0])): # comment number in a place --> len(comments[0])
-                        result_temp.append(bert.test_run(comments[i][k],comments[j][a] , model, tokenizer))
+                        temp_values.append(bert.test_run(comments[i][k],comments[j][a] , model, tokenizer))
                 
+                    result_temp.append(np.mean(temp_values))
+                
+                score_matrix[i][j] = average(result_temp , weights=[0.2 for i in range(len(result_temp))])
+                ratedscore_matrix[i][j] = score_matrix[i][j]*(rateBert/100)
+                
+                #without mean
+                """
                 if i == j:
                      score_matrix[i][j] = np.max(result_temp)
                 else:
                      score_matrix[i][j] = np.min(result_temp)
                 
                 ratedscore_matrix[i][j] = score_matrix[i][j]*(rateBert/100)
+                """
+
+                #without method min
                 # score_matrix[i][j] = np.mean(result_temp)
                 # ratedscore_matrix[i][j] = np.mean(result_temp)*(rateBert/100)
                     

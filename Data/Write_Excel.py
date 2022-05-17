@@ -2,10 +2,9 @@ from openpyxl import Workbook
 from pkg_resources import working_set
 import xlsxwriter
 
-
 class WriteExcel:
 
-    workbook_doc2vec = xlsxwriter.Workbook("Output/Doc2vec_output.xlsx")
+    workbook_doc2vec = xlsxwriter.Workbook("Output/Doc2vec_outputxlsx")
     workbook_cnn = xlsxwriter.Workbook("Output/CNN_output.xlsx")
     workbook_bert = xlsxwriter.Workbook("Output/Bert_output.xlsx")
     workbook_merged = xlsxwriter.Workbook("Output/output.xlsx")  # merged outputs
@@ -15,6 +14,7 @@ class WriteExcel:
 
     def writeExcel_Doc2vec(self, similarity_matrix, placeName_list, city_name):
         # similarity_matrix's size = (place number , place number)
+        
         worksheet_output = self.workbook_doc2vec.add_worksheet(city_name)
 
         for i in range(0, len(placeName_list[0])):  # place number

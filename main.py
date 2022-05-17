@@ -1,4 +1,3 @@
-from venv import create
 from Algorithms.CollaborativeFiltering.cosine_similarity import cosine_similarity
 from Algorithms.ImageSimilarity.Image_Similarity import ImageSimilarity
 from Algorithms.Bert.Bert_algorithm import Bert_algorithm
@@ -153,26 +152,6 @@ if isBert:
         )
 
     write_excel.workbook_bert.close()
-
-    """
-    score_matrix_List = []  # list for city
-    rated_scoreMatrix_list_bert = []
-
-    result_list = []
-
-    for i in range(0, len(prepread_comments)):  # city number
-        result_list.append(create_matrix.createScoresMatrix_Bert(prepread_comments[i]))
-        score_matrix_List.append(result_list[i][0])
-        rated_scoreMatrix_list_bert.append(result_list[i][1])
-
-    # TODO to Run Write Matrix to Excel
-    for i in range(0, len(score_matrix_List)):
-        write_excel.writeExcel_Bert(score_matrix_List[i], placeName_list, city_name)
-        write_excel.writeExcel_Bert(
-            rated_scoreMatrix_list_bert[i], placeName_list, city_name + "_rated"
-        )
-    write_excel.workbook_bert.close()
-    """
 
 if isImageSimilarity:
     print("We are not using now...")
