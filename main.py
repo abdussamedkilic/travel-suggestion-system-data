@@ -11,13 +11,13 @@ from Data.Mongo_DB import Mongodb
 
 import numpy as np
 
-isMongodb = False
+isMongodb = True
 isDoc2vec = False
 isCnn = False
 isSaveImage = False  # Read url from mongodb and save in file(part of cnn)
-isBert = False
+isBert = True
 isImageSimilarity = False
-isMerge = True  # for merged operation of output results.
+isMerge = False  # for merged operation of output results.
 
 city_name = "Istanbul"
 
@@ -143,22 +143,14 @@ if isBert:
     # prepread_comments's size = (city number , place number)
 
     # TODO to Run Create Scores Matrix
-    score_matrix_List = []  # list for city
-    rated_scoreMatrix_list_bert = []
-
-    result_list = []
-
-    for i in range(0, len(prepread_comments)):  # city number
-        result_list.append(create_matrix.createScoresMatrix_Bert(prepread_comments[i]))
-        score_matrix_List.append(result_list[i][0])
-        rated_scoreMatrix_list_bert.append(result_list[i][1])
-
+    scoreMatrix , ratedScore_matrix = create_matrix.createScoresMatrix_Bert(comments,rateBert)
+    
     # TODO to Run Write Matrix to Excel
-    for i in range(0, len(score_matrix_List)):
-        write_excel.writeExcel_Bert(score_matrix_List[i], placeName_list, city_name)
-        write_excel.writeExcel_Bert(
-            rated_scoreMatrix_list_bert[i], placeName_list, city_name + "_rated"
+    write_excel.writeExcel_Bert(scoreMatrix, placeName_list, city_name)
+    write_excel.writeExcel_Bert(
+            ratedScore_matrix, placeName_list, city_name + "_rated"
         )
+
     write_excel.workbook_bert.close()
 
 if isImageSimilarity:
@@ -190,8 +182,6 @@ if isMerge:
         doc2vec_places,
         cnn_places,
     )
-
-    print(merged_matrix)
 
     # TODO to Run Write Matrix to Excel
     write_excel.writeExcel_MergedResult(merged_matrix, doc2vec_places, city_name)

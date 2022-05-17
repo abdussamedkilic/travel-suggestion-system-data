@@ -1,6 +1,9 @@
 from Algorithms.CollaborativeFiltering.cosine_similarity import cosine_similarity
 from Algorithms.Bert.Bert_algorithm import Bert_algorithm
+from Algorithms.Bert.bert import Bert
 
+import numpy as np
+from numpy import average
 
 class CreateMatrix:
     def __init__(self) -> None:
@@ -53,19 +56,45 @@ class CreateMatrix:
     def createScoresMatrix_Bert(self, comments, rateBert=25):
 
         bert = Bert_algorithm()
-        score_matrix = [[0 for j in range(len(comments))] for i in range(len(comments))]
+        bertsimilarity = Bert()
+        model , tokenizer = bertsimilarity.getPretrainedModels("bert-base-uncased")
+
+        #score_matrix's size = (place number , place number) for each city
+        score_matrix = [
+            [0 for j in range(len(comments))] for i in range(len(comments))]
         ratedscore_matrix = [
             [0 for j in range(len(comments))] for i in range(len(comments))
         ]
 
-        for i in range(0, len(comments)):  # len(comments)
-            for j in range(0, len(comments)):  # len(comments)
-                print("i:" + str(i) + " j:" + str(j))
-                score_matrix[i][j] = bert.test_run(comments[i][0], comments[j][0])
-                ratedscore_matrix[i][j] = bert.test_run(
-                    comments[i][0], comments[j][0]
-                ) * (rateBert / 100)
-        return [score_matrix, ratedscore_matrix]
+        for i in range(0,2): # place number len(comments)
+            for j in range(0,3): # place number len(comments)
+                print("row ",i," column ",j)
+                result_temp = []
+                for k in range(0,len(comments[0])): # comment number in a place --> len(comments[0])
+                    temp_values = []
+                    for a in range(0,len(comments[0])): # comment number in a place --> len(comments[0])
+                        temp_values.append(bert.test_run(comments[i][k],comments[j][a] , model, tokenizer))
+                
+                    result_temp.append(np.mean(temp_values))
+                
+                score_matrix[i][j] = average(result_temp , weights=[0.2 for i in range(len(result_temp))])
+                ratedscore_matrix[i][j] = score_matrix[i][j]*(rateBert/100)
+                
+                #without mean
+                """
+                if i == j:
+                     score_matrix[i][j] = np.max(result_temp)
+                else:
+                     score_matrix[i][j] = np.min(result_temp)
+                
+                ratedscore_matrix[i][j] = score_matrix[i][j]*(rateBert/100)
+                """
+
+                #without method min
+                # score_matrix[i][j] = np.mean(result_temp)
+                # ratedscore_matrix[i][j] = np.mean(result_temp)*(rateBert/100)
+                    
+        return [score_matrix, ratedscore_matrix]           
 
     def createScoresMatrix_ImageSimilarity(self, similarity_results):
         print("We aren't using now...")
