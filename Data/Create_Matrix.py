@@ -66,15 +66,22 @@ class CreateMatrix:
             [0 for j in range(len(comments))] for i in range(len(comments))
         ]
 
-        for i in range(0,len(comments)): # place number len(comments)
-            for j in range(0,len(comments)): # place number len(comments)
+        for i in range(0,2): # place number len(comments)
+            for j in range(0,5): # place number len(comments)
                 print("row ",i," column ",j)
                 result_temp = []
                 for k in range(0,len(comments[0])): # comment number in a place --> len(comments[0])
                     for a in range(0,len(comments[0])): # comment number in a place --> len(comments[0])
                         result_temp.append(bert.test_run(comments[i][k],comments[j][a] , model, tokenizer))
-                score_matrix[i][j] = np.mean(result_temp)
-                ratedscore_matrix[i][j] = np.mean(result_temp)*(rateBert/100)
+                
+                if i == j:
+                     score_matrix[i][j] = np.max(result_temp)
+                else:
+                     score_matrix[i][j] = np.min(result_temp)
+                
+                ratedscore_matrix[i][j] = score_matrix[i][j]*(rateBert/100)
+                # score_matrix[i][j] = np.mean(result_temp)
+                # ratedscore_matrix[i][j] = np.mean(result_temp)*(rateBert/100)
                     
         return [score_matrix, ratedscore_matrix]           
 
