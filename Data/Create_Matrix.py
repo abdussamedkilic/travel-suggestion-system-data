@@ -66,8 +66,8 @@ class CreateMatrix:
             [0 for j in range(len(comments))] for i in range(len(comments))
         ]
 
-        for i in range(0,2): # place number len(comments)
-            for j in range(0,5): # place number len(comments)
+        for i in range(0,len(comments)): # place number len(comments)
+            for j in range(0,len(comments)): # place number len(comments)
                 print("row ",i," column ",j)
                 result_temp = []
                 for k in range(0,len(comments[0])): # comment number in a place --> len(comments[0])

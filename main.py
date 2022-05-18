@@ -5,6 +5,7 @@ from Algorithms.Bert.Bert_algorithm import Bert_algorithm
 from Algorithms.WordEmbeddings.DoctoVec import DoctoVec
 from Algorithms.ImageSimilarity.Cnn import Cnn
 from Data.Create_Matrix import CreateMatrix
+from Data.Update_Excel import UpdateExcel
 from Data.Write_Excel import WriteExcel
 from Data.Read_Image import ReadImage
 from Data.read_file import ReadFile
@@ -16,11 +17,11 @@ isMongodb = True
 isDoc2vec = False
 isCnn = False
 isSaveImage = False  # Read url from mongodb and save in file(part of cnn)
-isBert = True
+isBert = False
 isImageSimilarity = False
 isMerge = False  # for merged operation of output results.
 
-city_name = "Istanbul"
+city_name = "Ankara"
 
 # The sum of the values of these variables must be equal 100
 rateDoc2Vec = 25
@@ -62,6 +63,7 @@ test_document = [
 
 create_matrix = CreateMatrix()
 write_excel = WriteExcel()
+update_excel = UpdateExcel()
 
 main_mongodb = Mongodb()
 doc2vec = DoctoVec([city_name])
@@ -111,14 +113,25 @@ if isDoc2vec:
         ratedMatrix_list_Doc2vec.append(result_list[i][1])
 
     # TODO to Run Write Matrix to Excel
-    for i in range(0, len(scoreMatrix_list)):  # city number
-        # placeName_list's size(1,place number) --> just one city for places name. we will change.
-        write_excel.writeExcel_Doc2vec(scoreMatrix_list[i], placeName_list, city_name)
-        write_excel.writeExcel_Doc2vec(
+    # new
+    if update_excel.control_file('Doc2vec_output.xlsx'):
+        for i in range(0,len(scoreMatrix_list)):
+            update_excel.update_excel_doc2vec(
+                scoreMatrix_list[i],placeName_list,city_name)
+            update_excel.update_excel_doc2vec(
+                ratedMatrix_list_Doc2vec[i],placeName_list,city_name+"_rated")
+        
+        update_excel.loaded_workbook_doc2vec.save("Output/Doc2vec_output.xlsx")
+    
+    else:
+        for i in range(0, len(scoreMatrix_list)):  # city number
+            # placeName_list's size(1,place number) --> just one city for places name. we will change.
+            write_excel.writeExcel_Doc2vec(scoreMatrix_list[i], placeName_list, city_name)
+            write_excel.writeExcel_Doc2vec(
             ratedMatrix_list_Doc2vec[i], placeName_list, city_name + "_rated"
-        )
-    write_excel.workbook_doc2vec.close()
-
+            )
+        write_excel.workbook_doc2vec.close()
+   
 if isCnn:
     # TODO to Run CNN
     cnn = Cnn(image_list, city_name)
@@ -131,13 +144,22 @@ if isCnn:
     # rated_similarityScore_cnn = create_matrix.createRatedScoresMatrix_Cnn(feature_vector,rateCnn)
 
     # TODO to Run Write Matrix to Excel
-    write_excel.writeExcel_CNN(
-        image_list, city_name, similarity_score
-    )  # just one city for places name. we will change.
-    write_excel.writeExcel_CNN(
-        image_list, city_name + "_rated", rated_similarityScore_cnn
-    )
-    write_excel.workbook_cnn.close()
+    if update_excel.control_file('CNN_output.xlsx'):
+        update_excel.update_excel_cnn(
+            image_list,city_name,similarity_score
+        )
+        update_excel.update_excel_cnn(
+        image_list,city_name+"_rated",rated_similarityScore_cnn    
+        )
+        update_excel.loaded_workbook_cnn.save("Output/CNN_output.xlsx")
+    else:    
+        write_excel.writeExcel_CNN(
+            image_list, city_name, similarity_score
+        )  # just one city for places name. we will change.
+        write_excel.writeExcel_CNN(
+            image_list, city_name + "_rated", rated_similarityScore_cnn
+        )
+        write_excel.workbook_cnn.close()
 
 if isBert:
     # TODO to Run Bert
@@ -147,32 +169,16 @@ if isBert:
     scoreMatrix , ratedScore_matrix = create_matrix.createScoresMatrix_Bert(comments,rateBert)
     
     # TODO to Run Write Matrix to Excel
-    write_excel.writeExcel_Bert(scoreMatrix, placeName_list, city_name)
-    write_excel.writeExcel_Bert(
+    if update_excel.control_file('Bert_output.xlsx'):
+        update_excel.update_excel_bert(scoreMatrix,placeName_list,city_name)
+        update_excel.update_excel_bert(ratedScore_matrix,placeName_list,city_name+"_rated")
+        update_excel.loaded_workbook_bert.save("Output/Bert_output.xlsx")
+    else:
+        write_excel.writeExcel_Bert(scoreMatrix, placeName_list, city_name)
+        write_excel.writeExcel_Bert(
             ratedScore_matrix, placeName_list, city_name + "_rated"
         )
-
-    write_excel.workbook_bert.close()
-
-    """
-    score_matrix_List = []  # list for city
-    rated_scoreMatrix_list_bert = []
-
-    result_list = []
-
-    for i in range(0, len(prepread_comments)):  # city number
-        result_list.append(create_matrix.createScoresMatrix_Bert(prepread_comments[i]))
-        score_matrix_List.append(result_list[i][0])
-        rated_scoreMatrix_list_bert.append(result_list[i][1])
-
-    # TODO to Run Write Matrix to Excel
-    for i in range(0, len(score_matrix_List)):
-        write_excel.writeExcel_Bert(score_matrix_List[i], placeName_list, city_name)
-        write_excel.writeExcel_Bert(
-            rated_scoreMatrix_list_bert[i], placeName_list, city_name + "_rated"
-        )
-    write_excel.workbook_bert.close()
-    """
+        write_excel.workbook_bert.close()
 
 if isImageSimilarity:
     print("We are not using now...")
@@ -205,5 +211,9 @@ if isMerge:
     )
 
     # TODO to Run Write Matrix to Excel
-    write_excel.writeExcel_MergedResult(merged_matrix, doc2vec_places, city_name)
-    write_excel.workbook_merged.close()
+    if update_excel.control_file('output.xlsx'):
+        update_excel.update_excel_merged(merged_matrix,doc2vec_places,city_name)
+        update_excel.loaded_workbook_merged.save("Output/output.xlsx")
+    else:
+        write_excel.writeExcel_MergedResult(merged_matrix, doc2vec_places, city_name)
+        write_excel.workbook_merged.close()
