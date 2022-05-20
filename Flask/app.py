@@ -1,5 +1,5 @@
-from urllib import response
 from flask import Flask, jsonify
+from flask_cors import CORS
 import os
 import sys
 import inspect
@@ -11,6 +11,7 @@ sys.path.insert(0, parentdir)
 from Data.read_file import ReadFile
 
 app = Flask(__name__)
+CORS(app)
 read_file = ReadFile("Output/")
 
 

@@ -29,11 +29,12 @@ class ReadFile:
             if place_index:
                 place_data = city_data[place_index][1:]
                 top_ten_indices = heapq.nlargest(
-                    10, range(len(place_data)), place_data.__getitem__
+                    11, range(len(place_data)), place_data.__getitem__
                 )
                 top_ten_names = []
                 for idx in top_ten_indices:
                     top_ten_names.append(city_data[idx][0])
+                top_ten_names = top_ten_names[1:]
                 return {
                     "success": True,
                     "place_name": place_name,
