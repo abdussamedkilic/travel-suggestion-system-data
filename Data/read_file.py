@@ -37,10 +37,10 @@ class ReadFile:
                 top_ten_names = top_ten_names[1:]
                 return {
                     "success": True,
-                    "place_name": place_name,
-                    "top_ten_indices": top_ten_indices,
+                    # "place_name": place_name,
+                    # "top_ten_indices": top_ten_indices,
                     "top_ten_names": top_ten_names,
-                    "place_data": place_data,
+                    # "place_data": place_data,
                 }
             return {"success": False}
         except Exception:
